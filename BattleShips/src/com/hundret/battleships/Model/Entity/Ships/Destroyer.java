@@ -9,14 +9,15 @@ public class Destroyer extends Ship{
 
     private final static int MAX_NUM_DSTR = 3;
 
-    public Destroyer(Cell pos) {
+    public Destroyer(Cell pos, boolean dir) {
         super();
-        init();
+        init(dir);
         setLocation(pos);
     }
 
-    private void init() {
+    private void init(boolean dir) {
         shipSize = 2;
+        horizontal = dir;
     }
 
     public static int getMaxNumDstr() {

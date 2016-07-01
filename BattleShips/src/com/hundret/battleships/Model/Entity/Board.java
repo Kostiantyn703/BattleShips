@@ -14,6 +14,8 @@ public class Board {
     private final static int SIDE_SIZE = 10;
     private final static int BOX_SIZE = Cell.getSIZE() * SIDE_SIZE;
 
+    private int numOfShips = 0;
+
     private List<Cell> field;
     private List<Ship> ships;
 
@@ -23,11 +25,12 @@ public class Board {
         init();
     }
 
-    public boolean addShip(Cell pos) {
-        Ship tempShip = chooseShipType(pos);
+    public boolean addShip(Cell pos, boolean dir) {
+        Ship tempShip = chooseShipType(pos, dir);
         //check if ship out of boarders
         for (int i = 0; i < tempShip.getLocation().length; i++) {
-            if (tempShip.getLocation()[i].getxPos() >= getSideSize())
+            if (tempShip.getLocation()[i].getxPos() >= getSideSize() ||
+                    tempShip.getLocation()[i].getyPos() >= getSideSize())
                 return false;
         }
         //check if ship sets into filled cell
@@ -45,6 +48,7 @@ public class Board {
             }
         }
         ships.add(tempShip);
+        numOfShips++;
         if (checkMaxOfShips()) shipsReady = true;
         return true;
     }
@@ -52,26 +56,33 @@ public class Board {
     public void randomShipSet() {
         int xTemp, yTemp;
         Cell tempVal;
+        boolean tempDir;
+        int d;
         while (!checkMaxOfShips()) {
             xTemp = (int)(Math.random() * SIDE_SIZE);
             yTemp = (int)(Math.random() * SIDE_SIZE);
             tempVal = new Cell(xTemp, yTemp);
-            addShip(tempVal);
+            d = (int)(Math.random() * 10);
+            if (d % 2 == 1)
+                tempDir = true;
+            else
+                tempDir = false;
+            addShip(tempVal, tempDir);
         }
     }
 
-    private Ship chooseShipType(Cell c) {
+    private Ship chooseShipType(Cell c, boolean dir) {
         if (ships.size() < Battleship.getMaxNumBtl())
-            return new Battleship(c);
+            return new Battleship(c, dir);
         else if (ships.size() >= Battleship.getMaxNumBtl() &&
                     ships.size() < Battleship.getMaxNumBtl() + Cruiser.getMaxNumCrsr())
-                        return new Cruiser(c);
+                        return new Cruiser(c, dir);
         else if (ships.size() >= Battleship.getMaxNumBtl() + Cruiser.getMaxNumCrsr() &&
                     ships.size() < Battleship.getMaxNumBtl() + Cruiser.getMaxNumCrsr() + Destroyer.getMaxNumDstr())
-                        return new Destroyer(c);
+                        return new Destroyer(c, dir);
         else if (ships.size() >= Battleship.getMaxNumBtl() + Cruiser.getMaxNumCrsr() + Destroyer.getMaxNumDstr() &&
                     ships.size() < MAX_SHIPS_ON_BOARD)
-                        return new Submarine(c);
+                        return new Submarine(c, dir);
         return null;
     }
 
@@ -86,18 +97,24 @@ public class Board {
         return res;
     }
 
-    public void shipAttack(int index) {
+    public boolean shipAttack(int index) {
         field.get(index).setHit(true);
-        for (int i = 0; i < ships.size(); i++) {
-            for (int j = 0; j < ships.get(i).getLocation().length; j++) {
-                if (field.get(index).equals(ships.get(i).getLocation()[j]))
+        return checkShipHit(index);
+    }
+
+    private boolean checkShipHit(int index) {
+        for (int i = 0; i < ships.size(); i++)
+            for (int j = 0; j < ships.get(i).getLocation().length; j++)
+                if (field.get(index).equals(ships.get(i).getLocation()[j])) {
                     ships.get(i).hit(field.get(index));
-                if (ships.get(i).isDead()) {
-                    ships.get(i).setDead(true);
-                    fillBoardersOfShip(ships.get(i));
+                    if (ships.get(i).isDead()) {
+                        ships.get(i).setDead(true);
+                        fillBoardersOfShip(ships.get(i));
+                        numOfShips--;
+                    }
+                    return true;
                 }
-            }
-        }
+        return false;
     }
 
     private void fillBoardersOfShip(Ship ship) {
@@ -145,10 +162,14 @@ public class Board {
     }
 
     public boolean checkMaxOfShips() {
-        return ships.size() == MAX_SHIPS_ON_BOARD;
+        return getNumOfShips() == MAX_SHIPS_ON_BOARD;
     }
 
     public static int getMaxShipsOnBoard() {
         return MAX_SHIPS_ON_BOARD;
+    }
+
+    public int getNumOfShips() {
+        return numOfShips;
     }
 }

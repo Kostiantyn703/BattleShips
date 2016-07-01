@@ -9,14 +9,15 @@ public class Cruiser extends Ship {
 
     private final static int MAX_NUM_CRSR = 2;
 
-    public Cruiser(Cell pos){
+    public Cruiser(Cell pos, boolean dir){
         super();
-        init();
+        init(dir);
         setLocation(pos);
     }
 
-    private void init() {
+    private void init(boolean dir) {
         shipSize = 3;
+        horizontal = dir;
     }
 
     public static int getMaxNumCrsr() {

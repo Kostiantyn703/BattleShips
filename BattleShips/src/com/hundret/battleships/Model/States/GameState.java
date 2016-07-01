@@ -51,8 +51,8 @@ public class GameState {
 
     private void gamePlay() {
         if (!isPlayerTurn()) {
-            playerBoard.shipAttack(computerTurn());
-            playerTurn = true;
+            if (!playerBoard.shipAttack(computerTurn()))
+                playerTurn = true;
         }
     }
 
