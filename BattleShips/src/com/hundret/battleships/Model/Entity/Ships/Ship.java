@@ -1,7 +1,6 @@
 package com.hundret.battleships.Model.Entity.Ships;
 
 import com.hundret.battleships.Model.Entity.Cell;
-import com.hundret.battleships.Model.Entity.Direction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,20 +15,20 @@ public abstract class Ship {
     protected final static int BOARDERS_SIZE = 3;
 
     protected int shipSize;
+    protected boolean horizontal;
 
     private int boardersWidth;
     private Cell[] location;
     private List<Cell> boarders;
-
     private boolean dead = false;
-
-    private Direction direction;
 
     protected void setLocation(Cell pos) {
         location = new Cell[shipSize];
         for (int i = 0; i < shipSize; i++) {
-            location[i] = new Cell(pos.getxPos()+i, pos.getyPos());
-//            else if (direction == VERT) pos.setyPos(pos.getyPos()+1);
+            if (horizontal)
+                location[i] = new Cell(pos.getxPos()+i, pos.getyPos());
+            else
+                location[i] = new Cell(pos.getxPos(), pos.getyPos()+i);
         }
         setBoarders();
     }
@@ -37,9 +36,26 @@ public abstract class Ship {
     private void setBoarders() {
         boardersWidth = shipSize + 2;
         boarders = new ArrayList<>();
-        Cell temp;
         int x = location[0].getxPos()-1;
         int y = location[0].getyPos()-1;
+        if (horizontal)
+            horzBoarders(x,y);
+        else
+            vertBoarders(x,y);
+    }
+
+    private void vertBoarders(int x, int y) {
+        Cell temp;
+        for (int i = y; i < y + boardersWidth; i++) {
+            for (int j = x; j < x + BOARDERS_SIZE ; j++) {
+                temp = new Cell(j, i);
+                boarders.add(temp);
+            }
+        }
+    }
+
+    private void horzBoarders(int x, int y) {
+        Cell temp;
         for (int i = y; i < y + BOARDERS_SIZE; i++) {
             for (int j = x; j < x + boardersWidth; j++) {
                 temp = new Cell(j, i);

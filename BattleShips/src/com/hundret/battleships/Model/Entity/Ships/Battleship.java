@@ -9,14 +9,15 @@ public class Battleship extends Ship {
 
     private final static int MAX_NUM_BTL = 1;
 
-    public Battleship(Cell pos) {
+    public Battleship(Cell pos, boolean dir) {
         super();
-        init();
+        init(dir);
         setLocation(pos);
     }
 
-    private void init() {
+    private void init(boolean dir) {
         shipSize = 4;
+        horizontal = dir;
     }
 
     public static int getMaxNumBtl() {

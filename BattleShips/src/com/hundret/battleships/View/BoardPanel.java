@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,9 @@ public class BoardPanel extends JPanel {
     private List<JButton> buttons;
     private GridLayout layout;
     private Dimension dim;
-    private BoardListener listener;
+    private ButtListener listener;
+
+    public static boolean direction = true;
 
     public BoardPanel(Board b) {
         super();
@@ -32,7 +36,7 @@ public class BoardPanel extends JPanel {
 
     private void init() {
         dim = new Dimension(board.getBoxSize(), board.getBoxSize());
-        listener = new BoardListener();
+        listener = new ButtListener();
         layout = new GridLayout(board.getSideSize(), board.getSideSize());
         buttons = new ArrayList<>();
         setPreferredSize(dim);
@@ -72,17 +76,18 @@ public class BoardPanel extends JPanel {
     public void redrawPanel() {
         for (int i = 0; i < buttons.size(); i++) redrawButt(i);
     }
+
     //
-    //inner class BoardListener for button manipulations
+    //inner class ButtListener for button manipulations
     //
-    class BoardListener implements ActionListener {
+    class ButtListener implements ActionListener{
         int command;
         Cell temp;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             command = Integer.parseInt(e.getActionCommand());
             temp = board.getField().get(command);
-            System.out.println(command);
             if (GameState.isSetShips())
                 settleControl();
             if (GameState.isStartBattle() && GameState.isPlayerTurn())
@@ -90,14 +95,15 @@ public class BoardPanel extends JPanel {
         }
 
         private void settleControl() {
-            board.addShip(temp);
+            board.addShip(temp, direction);
         }
 
         private void attackControl() {
-            board.shipAttack(command);
-            GameState.setPlayerTurn(false);
+            if (!board.shipAttack(command))
+                GameState.setPlayerTurn(false);
         }
 
     }
+
 
 }
