@@ -2,13 +2,12 @@ package com.hundret.battleships.Model.Entity.Ships;
 
 import com.hundret.battleships.Model.Entity.Cell;
 
-import java.util.ArrayList;
-
 /**
  * Class for one-decker ship.
  */
 public class Submarine extends Ship {
 
+    //unused variable
     private final static int MAX_NUM_SUB = 4;
 
     public Submarine(Cell pos, boolean dir) {

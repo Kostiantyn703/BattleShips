@@ -14,8 +14,6 @@ public class Board {
     private final static int SIDE_SIZE = 10;
     private final static int BOX_SIZE = Cell.getSIZE() * SIDE_SIZE;
 
-    private int numOfShips = 0;
-
     private List<Cell> field;
     private List<Ship> ships;
 
@@ -27,7 +25,7 @@ public class Board {
 
     public boolean addShip(Cell pos, boolean dir) {
         Ship tempShip = chooseShipType(pos, dir);
-        //check if ship out of boarders
+        //check if ship out of borders
         for (int i = 0; i < tempShip.getLocation().length; i++) {
             if (tempShip.getLocation()[i].getxPos() >= getSideSize() ||
                     tempShip.getLocation()[i].getyPos() >= getSideSize())
@@ -48,7 +46,6 @@ public class Board {
             }
         }
         ships.add(tempShip);
-        numOfShips++;
         if (checkMaxOfShips()) shipsReady = true;
         return true;
     }
@@ -86,17 +83,6 @@ public class Board {
         return null;
     }
 
-    public boolean equalityShipAndField(int index) {
-        boolean res = false;
-        for (int i = 0; i < ships.size(); i++) {
-            for (int j = 0; j < ships.get(i).getLocation().length; j++) {
-                res = getField().get(index).equals(getShips().get(i).getLocation()[j]);
-                if (res) break;
-            }
-        }
-        return res;
-    }
-
     public boolean shipAttack(int index) {
         field.get(index).setHit(true);
         return checkShipHit(index);
@@ -107,35 +93,44 @@ public class Board {
             for (int j = 0; j < ships.get(i).getLocation().length; j++)
                 if (field.get(index).equals(ships.get(i).getLocation()[j])) {
                     ships.get(i).hit(field.get(index));
+                    ships.get(i).checkIfDead();
                     if (ships.get(i).isDead()) {
-                        ships.get(i).setDead(true);
                         fillBoardersOfShip(ships.get(i));
-                        numOfShips--;
                     }
                     return true;
                 }
         return false;
     }
 
+    public int aliveShips() {
+        int res = 0;
+        for (int i = 0; i < ships.size(); i++)
+            if (!ships.get(i).isDead()) res++;
+        return res;
+    }
+
     private void fillBoardersOfShip(Ship ship) {
         for (int x = 0; x < field.size(); x++) {
             for (int y = 0; y < ship.getBoarders().size(); y++) {
-                if (ship.getBoarders().get(y).equals(field.get(x)))
+                if (ship.getBoarders().get(y).equals(field.get(x))) {
                     field.get(x).setHit(true);
+                }
             }
         }
     }
 
-    public boolean checkShipsDead() {
+    public boolean checkAllShipsDead() {
         for (int i = 0; i < ships.size(); i++)
-            if (!ships.get(i).getLocation()[0].isHit())
+            if (!ships.get(i).isDead()) {
                 return false;
+            }
         return true;
     }
 
     private void init() {
         ships = new ArrayList<>();
         field = new ArrayList<>();
+        shipsReady = false;
         settingCoordinates();
     }
 
@@ -162,14 +157,11 @@ public class Board {
     }
 
     public boolean checkMaxOfShips() {
-        return getNumOfShips() == MAX_SHIPS_ON_BOARD;
+        return ships.size() == MAX_SHIPS_ON_BOARD;
     }
 
     public static int getMaxShipsOnBoard() {
         return MAX_SHIPS_ON_BOARD;
     }
 
-    public int getNumOfShips() {
-        return numOfShips;
-    }
 }

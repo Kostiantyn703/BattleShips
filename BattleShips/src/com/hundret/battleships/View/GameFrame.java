@@ -1,5 +1,8 @@
 package com.hundret.battleships.View;
 
+import com.hundret.battleships.Model.States.GameState;
+import com.hundret.battleships.View.Panels.GamePanel;
+
 import javax.swing.*;
 
 /**
@@ -7,16 +10,17 @@ import javax.swing.*;
  */
 public class GameFrame extends JFrame {
 
-    private String title = "Battle Ships";
-    private GamePanel gamePane = new GamePanel();
+    public static String name = "Battle Ships";
+    private GamePanel gamePane;// = new GamePanel();
 
-    public GameFrame() {
+    public GameFrame(GameState gs) {
         super();
-        init();
+        init(gs);
     }
 
-    private void init() {
-        setTitle(title);
+    private void init(GameState gs) {
+        gamePane = new GamePanel(gs);
+        setTitle(name);
         setContentPane(gamePane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);

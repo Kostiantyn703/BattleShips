@@ -3,7 +3,6 @@ package com.hundret.battleships.Model.Entity.Ships;
 import com.hundret.battleships.Model.Entity.Cell;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -49,7 +48,9 @@ public abstract class Ship {
         for (int i = y; i < y + boardersWidth; i++) {
             for (int j = x; j < x + BOARDERS_SIZE ; j++) {
                 temp = new Cell(j, i);
-                boarders.add(temp);
+                for (int z = 0 ; z < location.length; z++)
+                    if (!temp.equals(getLocation()[z]))
+                        boarders.add(temp);
             }
         }
     }
@@ -59,7 +60,9 @@ public abstract class Ship {
         for (int i = y; i < y + BOARDERS_SIZE; i++) {
             for (int j = x; j < x + boardersWidth; j++) {
                 temp = new Cell(j, i);
-                boarders.add(temp);
+                for (int z = 0 ; z < location.length; z++)
+                    if (!temp.equals(getLocation()[z]))
+                        boarders.add(temp);
             }
         }
     }
@@ -70,23 +73,18 @@ public abstract class Ship {
                 location[i].setHit(true);
     }
 
-    public boolean isDead(){
+    public void checkIfDead(){
         for (int i = 0; i < location.length; i++)
-            if (!location[i].isHit()) return false;
+            if (!location[i].isHit()) {
+                return;
+            }
+        setDead(true);
         fillBoarders();
-        return true;
     }
 
     private void fillBoarders() {
         for (int i = 0; i < getBoarders().size(); i++)
             boarders.get(i).setHit(true);
-    }
-
-    @Override
-    public String toString() {
-        return "Ship{" +
-                "location=" + Arrays.toString(location) +
-                '}';
     }
 
     public void setDead(boolean dead) {
@@ -101,4 +99,7 @@ public abstract class Ship {
         return boarders;
     }
 
+    public boolean isDead() {
+        return dead;
+    }
 }
