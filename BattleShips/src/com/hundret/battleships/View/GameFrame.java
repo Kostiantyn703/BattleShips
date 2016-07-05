@@ -11,7 +11,7 @@ import javax.swing.*;
 public class GameFrame extends JFrame {
 
     public static String name = "Battle Ships";
-    private GamePanel gamePane;// = new GamePanel();
+    private GamePanel gamePane;
 
     public GameFrame(GameState gs) {
         super();

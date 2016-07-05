@@ -34,9 +34,9 @@ public class StatusPanel extends JPanel {
         playerStatus.setText(p + gs.getPlayerBoard().aliveShips() + " / " + Board.getMaxShipsOnBoard());
         compStatus.setText(c + gs.getEnemyBoard().aliveShips() + " / " + Board.getMaxShipsOnBoard());
         if (GameState.isPlayerTurn())
-            setBackground(Color.CYAN);
+            setBackground(Color.CYAN.darker());
         else
-            setBackground(Color.RED);
+            setBackground(Color.RED.darker());
     }
 
 }

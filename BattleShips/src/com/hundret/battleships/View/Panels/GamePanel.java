@@ -135,7 +135,7 @@ public class GamePanel extends JPanel {
 
     private void initPanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        setBackground(Color.ORANGE);
+        setBackground(Color.ORANGE.darker());
         initButts();
         initDirButt();
     }
